@@ -19,32 +19,47 @@ public class Customer {
     }
 
     public void addToCart(Product product, int quantity) {
-        if (product.getPrice() <= balance) {
+        if (product.getPrice() * quantity <= balance) {
             if (product.getQuantity() >= quantity) {
                 LocalDate today = LocalDate.now();
-                if(product instanceof ShipExpireProd){
-                    if (today.isAfter(((ShipExpireProd)product).getExpirationDate())) {
-                        System.out.println("The product " + product.getName() + " is expired and cannot be added to the cart.");
+                if (product instanceof ShipExpireProd) {
+                    if (today.isAfter(((ShipExpireProd) product).getExpirationDate())) {
+                        System.out.println("This " + product.getName() + " is expired and cannot be added to the cart.");
                         return;
                     }
-                }else if (product instanceof NonShipExpirableProduct){
-                    if (today.isAfter(((NonShipExpirableProduct)product).getExpirationDate())) {
-                        System.out.println("The product " + product.getName() + " is expired and cannot be added to the cart.");
+                } else if (product instanceof NonShipExpirableProduct) {
+                    if (today.isAfter(((NonShipExpirableProduct) product).getExpirationDate())) {
+                        System.out.println("This " + product.getName() + " is expired and cannot be added to the cart.");
                         return;
                     }
                 }
-                product.decreaseQuant(quantity);
+                Product purchasedProduct;
 
-                Product purchasedProduct = product;
-                purchasedProduct.setQuantity(quantity);
+                if (product instanceof ShipExpireProd) {
+                    purchasedProduct = new ShipExpireProd(product.getName(), product.getPrice(), quantity,
+                            ((ShipExpireProd) product).getWeight(), ((ShipExpireProd) product).getExpirationDate());
+                } else if (product instanceof ShippableProduct) {
+                    purchasedProduct = new ShippableProduct(product.getName(), product.getPrice(), quantity,
+                            ((ShippableProduct) product).getWeight());
+                }else if (product instanceof NonShipExpirableProduct) {
+                    purchasedProduct = new NonShipExpirableProduct(product.getName(), product.getPrice(), quantity,
+                            ((NonShipExpirableProduct) product).getExpirationDate());
+                } else {
+                    purchasedProduct = new Product(product.getName(), product.getPrice(), quantity);
+                }
+
+//                Product purchasedProduct = new Product(product.getName(), product.getPrice(), quantity);
+                product.decreaseQuant(quantity);
 
                 cart.add(purchasedProduct);
                 balance -= product.getPrice();
             } else {
                 System.out.println("There is no enough " + product.getName() + " in stock");
             }
-        } else
-            System.out.println("Your balance isn't enough to buy " + product.getName());
+        } else {
+            System.out.println("Your balance isn't enough to buy " + quantity + " " + product.getName() +
+                    " You can only buy " + (int) (balance / product.getPrice()) + " of " + product.getName());
+        }
     }
 
     public void checkout() {
@@ -53,8 +68,8 @@ public class Customer {
         double shippingCost = 0.0;
         double totalWithShipping = 0.0;
 
-        if(cart.isEmpty()) {
-            System.out.println("Your cart is empty");
+        if (cart.isEmpty()) {
+            System.out.println(this.name + " your cart is empty!");
         } else {
             System.out.println("##############################");
             System.out.println("** shipment notice **");

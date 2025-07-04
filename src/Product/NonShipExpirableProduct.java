@@ -14,4 +14,9 @@ public class NonShipExpirableProduct extends Product{
     public LocalDate getExpirationDate() {
         return expirationDate;
     }
+
+    @Override
+    public Product generateObjWithQuant(int quantity) {
+        return new NonShipExpirableProduct(this.getName(), this.getPrice(), quantity, this.expirationDate);
+    }
 }

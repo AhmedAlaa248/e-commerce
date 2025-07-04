@@ -13,4 +13,10 @@ public class ShippableProduct extends Product implements ShippableInterface {
     public double getWeight() {
         return weight;
     }
+
+    @Override
+    public Product generateObjWithQuant(int quantity) {
+        return new ShippableProduct(this.getName(), this.getPrice(), quantity, this.weight);
+
+    }
 }

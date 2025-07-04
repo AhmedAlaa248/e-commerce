@@ -19,7 +19,7 @@ public class Main {
         ShippableProduct gum = new ShippableProduct("Gum", 10.0, 20, 100.0);
         ShippableProduct tv = new ShippableProduct("Tv", 24500.0, 20, 5100.0);
 
-        Product ebook = new Product("E-book", 300.0, 5);
+        Product ebook = new Product("E-book", 5000.0, 5);
 
         Product psCard = new NonShipExpirableProduct("PSN card", 550, 6, LocalDate.of(2025, 8, 31));
 
@@ -33,18 +33,21 @@ public class Main {
         products.add(psCard);
 
 
-        customer1.addToCart(cheese, 2);
-        customer1.addToCart(biscuits, 1);
+        customer1.addToCart(products.get(0), 4);
+        customer1.addToCart(biscuits, 12);
         customer1.addToCart(milk, 2);
-        customer1.addToCart(ebook, 3);
-        customer1.addToCart(gum, 3);
+        customer1.addToCart(gum, 5);
         customer1.addToCart(tv, 1);
         customer1.addToCart(ebook, 2);
         customer1.addToCart(psCard, 3);
 
         customer1.checkout();
 
+        System.out.println("##################################");
         customer2.checkout();
+        System.out.println("##################################");
+
+
 
         printSystemProducts(products);
     }

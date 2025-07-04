@@ -14,4 +14,10 @@ public class ShipExpireProd extends ShippableProduct {
     public LocalDate getExpirationDate() {
         return expirationDate;
     }
+
+    @Override
+    public Product generateObjWithQuant(int quantity) {
+        return new ShipExpireProd(this.getName(), this.getPrice(), quantity, this.getWeight(), this.expirationDate);
+
+    }
 }

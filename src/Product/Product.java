@@ -31,4 +31,7 @@ public class Product {
     public void decreaseQuant(int q) {
         this.quantity -= q;
     }
-}
+
+    public Product generateObjWithQuant(int quantity) {
+        return new Product(this.name, this.price, quantity);
+    }}

@@ -1,0 +1,84 @@
+import Product.NonShipExpirableProduct;
+import Product.Product;
+import Product.ShipExpireProd;
+import Product.ShippableProduct;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Customer {
+
+    private String name;
+    private double balance;
+    private List<Product> cart = new ArrayList<>();
+
+    public Customer(String name, double balance) {
+        this.name = name;
+        this.balance = balance;
+    }
+
+    public void addToCart(Product product, int quantity) {
+        if (product.getPrice() <= balance) {
+            if (product.getQuantity() >= quantity) {
+                LocalDate today = LocalDate.now();
+                if(product instanceof ShipExpireProd){
+                    if (today.isAfter(((ShipExpireProd)product).getExpirationDate())) {
+                        System.out.println("The product " + product.getName() + " is expired and cannot be added to the cart.");
+                        return;
+                    }
+                }else if (product instanceof NonShipExpirableProduct){
+                    if (today.isAfter(((NonShipExpirableProduct)product).getExpirationDate())) {
+                        System.out.println("The product " + product.getName() + " is expired and cannot be added to the cart.");
+                        return;
+                    }
+                }
+                product.decreaseQuant(quantity);
+
+                Product purchasedProduct = product;
+                purchasedProduct.setQuantity(quantity);
+
+                cart.add(purchasedProduct);
+                balance -= product.getPrice();
+            } else {
+                System.out.println("There is no enough " + product.getName() + " in stock");
+            }
+        } else
+            System.out.println("Your balance isn't enough to buy " + product.getName());
+    }
+
+    public void checkout() {
+        double totalWeight = 0.0;
+        double totalPrice = 0.0;
+        double shippingCost = 0.0;
+        double totalWithShipping = 0.0;
+
+        if(cart.isEmpty()) {
+            System.out.println("Your cart is empty");
+        } else {
+            System.out.println("##############################");
+            System.out.println("** shipment notice **");
+
+            totalWeight = ECommerce.ShippingService(cart);
+            shippingCost = totalWeight * 0.025;
+
+            System.out.println("\n** Checkout receipt **");
+            for (Product product : cart) {
+                double thisTotalPrice = product.getPrice() * product.getQuantity();
+                totalPrice += thisTotalPrice;
+                System.out.println(product.getQuantity() + "x " + product.getName() + "\t\t" + thisTotalPrice);
+            }
+
+            totalWithShipping = totalPrice + shippingCost;
+            System.out.println("---------------------------------------------");
+            System.out.println("Subtotal\t\t" + totalPrice);
+            System.out.println("Shipping\t\t" + shippingCost);
+            System.out.println("Amount\t\t" + totalWithShipping);
+
+
+        }
+        cart.clear();
+    }
+}
+
+

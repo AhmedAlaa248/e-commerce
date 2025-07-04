@@ -33,22 +33,9 @@ public class Customer {
                         return;
                     }
                 }
-                Product purchasedProduct;
 
-                if (product instanceof ShipExpireProd) {
-                    purchasedProduct = new ShipExpireProd(product.getName(), product.getPrice(), quantity,
-                            ((ShipExpireProd) product).getWeight(), ((ShipExpireProd) product).getExpirationDate());
-                } else if (product instanceof ShippableProduct) {
-                    purchasedProduct = new ShippableProduct(product.getName(), product.getPrice(), quantity,
-                            ((ShippableProduct) product).getWeight());
-                }else if (product instanceof NonShipExpirableProduct) {
-                    purchasedProduct = new NonShipExpirableProduct(product.getName(), product.getPrice(), quantity,
-                            ((NonShipExpirableProduct) product).getExpirationDate());
-                } else {
-                    purchasedProduct = new Product(product.getName(), product.getPrice(), quantity);
-                }
+                Product purchasedProduct = product.generateObjWithQuant(quantity);
 
-//                Product purchasedProduct = new Product(product.getName(), product.getPrice(), quantity);
                 product.decreaseQuant(quantity);
 
                 cart.add(purchasedProduct);
